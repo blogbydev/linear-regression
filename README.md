@@ -1,52 +1,19 @@
-# Project Name
-> Outline a brief description of your project.
+# Linear Regression on Bike Sharing dataset
+> This assignment is a programming assignment to build a multiple linear regression model for the prediction of demand for shared bikes.
 
-
-## Table of Contents
-* [General Info](#general-information)
-* [Technologies Used](#technologies-used)
-* [Conclusions](#conclusions)
-* [Acknowledgements](#acknowledgements)
-
-<!-- You can include any other section that is pertinent to your problem -->
-
-## General Information
-- Provide general information about your project here.
-- What is the background of your project?
-- What is the business probem that your project is trying to solve?
-- What is the dataset that is being used?
-
-<!-- You don't have to answer all the questions - just the ones relevant to your project. -->
+## Table of contents
+1. EDA
+2. data preparation
+3. import linear regression libraries
+4. train test split
+5. scaling
+6. correlation heatmap
+7. modelling
+8. Inferences
 
 ## Conclusions
-- Conclusion 1 from the analysis
-- Conclusion 2 from the analysis
-- Conclusion 3 from the analysis
-- Conclusion 4 from the analysis
-
-<!-- You don't have to answer all the questions - just the ones relevant to your project. -->
-
-
-## Technologies Used
-- library - version 1.0
-- library - version 2.0
-- library - version 3.0
-
-<!-- As the libraries versions keep on changing, it is recommended to mention the version of library used in this project -->
-
-## Acknowledgements
-Give credit here.
-- This project was inspired by...
-- References if any...
-- This project was based on [this tutorial](https://www.example.com).
-
-
-## Contact
-Created by [@githubusername] - feel free to contact me!
-
-
-<!-- Optional -->
-<!-- ## License -->
-<!-- This project is open source and available under the [... License](). -->
-
-<!-- You don't have to include all sections - just the one's relevant to your project -->
+* Temperature seems to have a good positive correlation with bike sharing. It’s possible that the USA being a cold country, people would like to use more bike sharing when the temperature goes higher
+* Rise in snowfall or rain seems to have a moderately negative correlation with bike sharing. It makes sense that when it snows or rains, people wouldn’t want to ride a bike
+* Year by year bike sharing is increasing. It's possible that after the pandemic, people are moving out more and using bikes.
+* Since cnt was scaled, we should use `scaler.inverse_transform('cnt')` to get the unscaled value of cnt
+* m12 is our final model.
