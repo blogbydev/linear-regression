@@ -1,14 +1,61 @@
 Assignment-based Subjective Questions
 1. From your analysis of the categorical variables from the dataset, what could you infer about their effect on the dependent variable?
+    - 
 2. Why is it important to use drop_first=True during dummy variable creation?
+    - It is important to use `drop_first=True` to avoid having perfect multicollinearity.
+    - If we don't use drop_first=True, all our columns that we got out of `pd.get_dummies` have highly collinear with each other which will affect our model with high VIF values. Eventually we will have to drop them to reduce VIFs. So it's better if we drop them at the time of creation itself.
 3. Looking at the pair-plot among the numerical variables, which one has the highest correlation with the target variable?
+    - temp and atemp numerical variables have the highest correlation.
 4. How did you validate the assumptions of Linear Regression after building the model on the training set?
+    - The residuals (aka error-terms) should have a normal distribution. We verify by plotting a kdeplot and a qqplot for the residuals.
+    - The residuals should be homoscedastic. This means the residual's variance should lie within a limited horizontal band and it should be neither decreasing, not increasing. Also it should be funnel shaped.
+    - The residuals should not have a relationship with other predictor variables. One way to check this independence is to plot a y-pred vs residuals plot. If the residuals are scattered all over the place and no clear pattern is visible, we declare that our residuals are independent. The other way is to verify if the durbin-watson value is around 2.
+    - Model evaluation
+        - During every modelling(with different combination of predictor variables), we can also create a plot of y_test and y_test_pred and expect a strong positive correlation.
+        - We check for overfitting or underfitting by comparing the r-squared-scores of both training and test data over our model.
 5. Based on the final model, which are the top 3 features contributing significantly towards explaining the demand of the shared bikes?
+    - 
 
 General Subjective Questions
 1. Explain the linear regression algorithm in detail.
     - Out of the different problems to solve with machine learning, linear regression algorithm tries to solve the problem of prediction of numerical values for a target variable given a single or a bunch of predictor variables are linearly associated with it. These linear associations can be weak or strong, they can be positive or negative.
-    - a linear relationship can be built like so, y = \beta 0 + \beta 1 X\imath 
+    - a linear relationship can be built like so, y = b0 + b1X1 + b2X2 + ... where each b is the coefficient (or weight) assigned to a predictor variable X. b0 is not associated with any predictor variable and is the intercept of the line in a hyperplane(in case of multiple predictor variable). The higher the value of b, the more that corresponding predictor variable is associated with the target variable. It would also mean that for a unit change in the predictor variable, the target variable will change by b, given all the other predictor variables are kept constant.
+    - We start with a thorough exploratory data analysis to understand what the data is describing at the moment.
+        - fix for missing values
+        - outlier treatment
+        - conversion of data to proper datatypes
+        - derived columns(domain wise, expansion of dates, etc)
+        - univariate, bivariate analysis
+    - We create a pairplot between all the numerical variables to verify that there are some variables which have good correlation with the target variable.
+    - Next, we convert all our categorical variables to numerical columns by expanding them into multiple columns. We use the technique of binary-encoding (for yes-no, true-false type of categorical columns). For categorical columns having more than 2 categories, we use `pd.get_dummies` to create multiple columns with a 0 or 1. The column-name takes the value of the text. We also apply the `drop_first=True` argument to drop one of the columns to avoid perfect multicolinearity.
+    - Next, we split the dataset into training and testing data and we keep them completely isolated with each other.
+    - Next, we apply scaling to our training dataset using the min-max (normalization) or standardized(z normal distribution) scaling depending on the usecase. We keep the output of the scaling method safe to use for purposes of scaling our testing data as well. We wil also need this output of scaling method to be used at a later stage when we convert the target-variable to the inverse-scaling-transformed value.
+    - Next, we create a heatmap between all the variables to look for strong positive/negative correlations. This will be useful when we do feature elimination.
+    - At this point, we have multiple numerical columns, from which we need to create our model that can predict the target variable. There are many ways we can arrive at our final list of predictor variables. But to save time, we start with RFE (Recursive Feature Elimination), which is available to use with the help of python libraries like `sklearn`. RFE arrives at our desired number of predictor variables with the help of automation. It compares all combinations of predictor variables and assign ranks to the predictor variables. These ranks are a representation of how strongly a predictor variable is related to the target variable. Generally, out of all the variables, we take the top 20 predictor variables and continue a manual feature elimination based on our domain knowledge.
+    - Next, we do modelling. Based on our training data (predictor variables and target variable), we calculate the model with the help of `ordinary least squares` algorithm. Before we pass in the training data to the ordinary least squares algorithm, we add another column to our training data which represents the "constants" (the intercept of the model). statsmodel.OLS treats constants as yet another predictor variable and tries to come up with coefficients of all the predictor variables (including the constants) which can define the target variables value. It's the best fit line (in the hyperplane in case of multiple linear regression) which is closest to the data points with least error. Internally the ordinary least squares will run the gradient descent algorithm to arrive at the final set of coefficients which have the least errors compared to other model-coefficients.
+    - Once we have a potential model ready, we need to do a model verification. We consider multiple things when we verify our model
+        - variables with higher than 0.05 p-values are not significant, we need to remove them
+        - variables with high VIF (a representation of how a particular predictor variable is highly correlated to other predictor variables) need to be removed
+        - other variables which we think do not contribute to the model should be removed based on our EDA analysis and our domain knowledge
+    - Other considerations we need for our model is that it follows the assumptions of linear regression. These are the various assumptions of linear regression
+        - The residuals (aka error-terms) should have a normal distribution. We verify by plotting a kdeplot and a qqplot for the residuals.
+        - The residuals should be homoscedastic. This means the residual's variance should lie within a limited horizontal band and it should be neither decreasing, not increasing. Also it should be funnel shaped.
+        - The residuals should not have a relationship with other predictor variables. One way to check this independence is to plot a y-pred vs residuals plot. If the residuals are scattered all over the place and no clear pattern is visible, we declare that our residuals are independent.
+    - Model evaluation
+        - During every modelling(with different combination of predictor variables), we can also create a plot of y_test and y_test_pred and expect a strong positive correlation.
+        - We check for overfitting or underfitting by comparing the r-squared-scores of both training and test data over our model.
+    - Our objective is to keep running modelling for different combination of predictor variables until we get the best value of
+        - no more insignificant (high p-value) variables
+        - no highly multicolinear variables (VIF should be less than 5)
+        - Adjusted R-square
+        - Low difference between r2 score of training and test data
+        - low RMSE, low MAE of the residuals
+    - Once we have our final model, our final outcome should be
+        - the model
+        - the output of scaling
+        - various statistics proving the correctness of our model
+        - actionable inferences
+    
 
 2. Explain the Anscombe’s quartet in detail.
     - <p><img src="image.png" width="200" height="200"/></p>
